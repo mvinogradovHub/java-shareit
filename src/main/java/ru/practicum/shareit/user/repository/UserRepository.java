@@ -14,5 +14,6 @@ public interface UserRepository {
     List<User> getUsers();
 
     User getUserById(Long id);
+
     User getUserByEmail(String email);
 }
