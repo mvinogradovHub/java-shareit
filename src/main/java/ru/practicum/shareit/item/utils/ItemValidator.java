@@ -19,6 +19,6 @@ public class ItemValidator {
             return;
         }
         log.warn("The user id {} does not have rights to edit items", userId);
-        throw new NoEditingRightsException("The user id " + userId + " does not have rights to edit item");
+        throw new NoEditingRightsException("User id " + userId + " does not have rights to edit item");
     }
 }
