@@ -1,14 +1,11 @@
-package ru.practicum.shareit.item.service;
+package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.utils.ItemValidator;
-import ru.practicum.shareit.user.utils.UserValidator;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserValidator;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,10 +18,11 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
+    private final UserRepository userRepository;
 
     public ItemDto addItem(ItemDto itemDto, Long userId) {
         userValidator.checkUserInRepository(userId);
-        itemDto.setOwnerId(userId);
+        itemDto.setOwner(UserMapper.toUserDto(userRepository.getUserById(userId)));
         return ItemMapper.toItemDto(itemRepository.addItem(ItemMapper.toItem(itemDto)));
     }
 

@@ -1,8 +1,6 @@
-package ru.practicum.shareit.item.repository.impl;
+package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +27,7 @@ public class InMemoryItemRepository implements ItemRepository {
 
     @Override
     public List<Item> getItems(Long userId) {
-        return items.values().stream().filter(a -> a.getOwnerId().equals(userId)).collect(Collectors.toList());
+        return items.values().stream().filter(a -> a.getOwner().getId().equals(userId)).collect(Collectors.toList());
     }
 
     @Override
