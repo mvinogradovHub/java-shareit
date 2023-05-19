@@ -23,7 +23,7 @@ public class BookingService {
     private final ItemRepository itemRepository;
 
     public BookingDto addBooking(BookingWithoutAttachObjDto bookingWithoutAttachObjDto, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not Found"));
         Item item = itemRepository.findById(bookingWithoutAttachObjDto.getItemId()).orElseThrow(() -> new NotFoundException("Item with ID " + bookingWithoutAttachObjDto.getItemId() + " not found"));
         bookingValidator.checkItemAvailable(item);
         bookingWithoutAttachObjDto.setStatus(BookingStatus.WAITING);
