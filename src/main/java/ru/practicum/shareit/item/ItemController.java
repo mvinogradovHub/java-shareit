@@ -30,13 +30,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
+    public ItemWithBookingAndCommentDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
         log.info("Received request to GET /items/{} with RequestHeader X-Sharer-User-Id = {}", itemId, userId);
         return itemService.getItem(userId, itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getItem(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemWithBookingAndCommentDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Received request to GET /items with RequestHeader X-Sharer-User-Id = {}", userId);
         return itemService.getItems(userId);
     }
@@ -45,5 +45,11 @@ public class ItemController {
     public List<ItemDto> searchItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text) {
         log.info("Received request to GET /items/search?text={} with RequestHeader X-Sharer-User-Id = {}", text, userId);
         return itemService.searchItems(userId, text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@Valid @RequestBody CommentDto commentDto, @RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
+        log.info("Received request to Post /items/{}/comment with RequestHeader X-Sharer-User-Id = {} and body: {}", itemId, userId, commentDto);
+        return itemService.addComment(commentDto, userId, itemId);
     }
 }
