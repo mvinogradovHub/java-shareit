@@ -18,6 +18,7 @@ public class BookingValidator {
         log.warn("Booking can be viewed either by the author or the owner of the item");
         throw new NoRightsToViewException("Booking can be viewed either by the author or the owner of the item");
     }
+
     public void checkItemAvailable(Item item) {
         if (item.getAvailable()) {
             return;
@@ -33,6 +34,7 @@ public class BookingValidator {
         log.warn("The start date must be earlier than the end date");
         throw new ErrorToCreateException("The start date must be earlier than the end date");
     }
+
     public void checkBookingStatus(Boolean isApproved, Booking booking) {
         if (isApproved && booking.getStatus().equals(BookingStatus.APPROVED)) {
             log.warn("Cannot be approved in this status");
@@ -48,7 +50,6 @@ public class BookingValidator {
         throw new NotFoundException("You can't book your own Item");
 
     }
-
 
 
 }

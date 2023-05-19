@@ -32,6 +32,7 @@ public class ErrorHandler {
     public ErrorResponse handleNoEditingRights(final NoEditingRightsException e) {
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNoRightsToView(final NoRightsToViewException e) {
@@ -55,6 +56,7 @@ public class ErrorHandler {
     public ErrorResponse handleUnsupportedState(final UnsupportedStateException e) {
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadStatus(final BadStatusException e) {
