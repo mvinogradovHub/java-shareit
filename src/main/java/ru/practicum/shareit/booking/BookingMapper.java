@@ -12,18 +12,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingMapper {
 
-    public static BookingDto BookingToBookingDto(Booking booking) {
+    public static BookingDto bookingToBookingDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
                 .end(booking.getEnd())
                 .start(booking.getStart())
-                .item(ItemMapper.ItemToItemDto(booking.getItem(),null,null,null))
+                .item(ItemMapper.itemToItemDto(booking.getItem(),null,null,null))
                 .status(booking.getStatus())
                 .booker(UserMapper.toUserDto(booking.getBooker()))
                 .build();
     }
 
-    public static Booking BookingDtoToBooking(BookingWithoutObjDto bookingWithoutObjDto, User user, Item item) {
+    public static Booking bookingDtoToBooking(BookingWithoutObjDto bookingWithoutObjDto, User user, Item item) {
         return Booking.builder()
                 .end(bookingWithoutObjDto.getEnd())
                 .start(bookingWithoutObjDto.getStart())
@@ -33,7 +33,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public static BookingWithoutObjDto BookingToBookingWithoutObjDto(Booking booking) {
+    public static BookingWithoutObjDto bookingToBookingWithoutObjDto(Booking booking) {
         if (booking != null) {
             return BookingWithoutObjDto.builder()
                     .id(booking.getId())
@@ -47,8 +47,8 @@ public class BookingMapper {
         return null;
     }
 
-    public static List<BookingDto> BookingListToListBookingDto(List<Booking> bookingList) {
-        return bookingList.stream().map(BookingMapper::BookingToBookingDto).collect(Collectors.toList());
+    public static List<BookingDto> bookingListToListBookingDto(List<Booking> bookingList) {
+        return bookingList.stream().map(BookingMapper::bookingToBookingDto).collect(Collectors.toList());
     }
 
 }

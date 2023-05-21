@@ -28,7 +28,7 @@ public class ItemService {
 
     public ItemDto addItem(ItemDto itemDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-        return ItemMapper.ItemToItemDto(itemRepository.save(ItemMapper.ItemDtoToItem(itemDto,user)),null,null,null);
+        return ItemMapper.itemToItemDto(itemRepository.save(ItemMapper.itemDtoToItem(itemDto,user)),null,null,null);
     }
 
     public ItemDto updateItem(ItemDto itemDto, Long userId, Long itemId) {
@@ -44,7 +44,7 @@ public class ItemService {
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
-        return ItemMapper.ItemToItemDto(itemRepository.save(item),null,null,null);
+        return ItemMapper.itemToItemDto(itemRepository.save(item),null,null,null);
     }
 
     public ItemDto getItem(Long userId, Long itemId) {
@@ -52,16 +52,16 @@ public class ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item with ID " + itemId + " not found"));
         BookingWithoutObjDto lastBookingWithoutObjDto = null;
         BookingWithoutObjDto nextBookingWithoutObjDto = null;
-        List<CommentDto> commentsDto = CommentMapper.ListCommentToListCommentDto(commentRepository.getCommentsItem(itemId));
+        List<CommentDto> commentsDto = CommentMapper.listCommentToListCommentDto(commentRepository.getCommentsItem(itemId));
         if (item.getOwner().getId().equals(userId)) {
             lastBookingWithoutObjDto = BookingMapper
-                    .BookingToBookingWithoutObjDto(bookingRepository
+                    .bookingToBookingWithoutObjDto(bookingRepository
                             .getItemLastBooking(item.getId(), LocalDateTime.now()).orElse(null));
             nextBookingWithoutObjDto = BookingMapper
-                    .BookingToBookingWithoutObjDto(bookingRepository
+                    .bookingToBookingWithoutObjDto(bookingRepository
                             .getItemNextBooking(item.getId(), LocalDateTime.now()).orElse(null));
         }
-        return ItemMapper.ItemToItemDto(item, lastBookingWithoutObjDto, nextBookingWithoutObjDto, commentsDto);
+        return ItemMapper.itemToItemDto(item, lastBookingWithoutObjDto, nextBookingWithoutObjDto, commentsDto);
     }
 
     public List<ItemDto> getItems(Long userId) {
@@ -70,15 +70,15 @@ public class ItemService {
         List<ItemDto> itemWithBookingAndCommentDto = new ArrayList<>();
         for (Item item : items) {
             Long id = item.getId();
-            List<CommentDto> commentsDto = CommentMapper.ListCommentToListCommentDto(commentRepository.getCommentsItem(id));
+            List<CommentDto> commentsDto = CommentMapper.listCommentToListCommentDto(commentRepository.getCommentsItem(id));
             BookingWithoutObjDto lastBookingWithoutObjDto = BookingMapper
-                    .BookingToBookingWithoutObjDto(bookingRepository
+                    .bookingToBookingWithoutObjDto(bookingRepository
                             .getItemLastBooking(id, LocalDateTime.now()).orElse(null));
             BookingWithoutObjDto nextBookingWithoutObjDto = BookingMapper
-                    .BookingToBookingWithoutObjDto(bookingRepository
+                    .bookingToBookingWithoutObjDto(bookingRepository
                             .getItemNextBooking(id, LocalDateTime.now()).orElse(null));
             itemWithBookingAndCommentDto.add(ItemMapper
-                    .ItemToItemDto(item, lastBookingWithoutObjDto, nextBookingWithoutObjDto, commentsDto));
+                    .itemToItemDto(item, lastBookingWithoutObjDto, nextBookingWithoutObjDto, commentsDto));
         }
         return itemWithBookingAndCommentDto;
     }
@@ -88,7 +88,7 @@ public class ItemService {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return ItemMapper.ListItemToListItemDto(itemRepository.searchItems(text));
+        return ItemMapper.listItemToListItemDto(itemRepository.searchItems(text));
     }
 
     public CommentDto addComment(CommentDto commentDto, Long userId, Long itemId) {
@@ -97,7 +97,7 @@ public class ItemService {
         bookingRepository.getByBookerAndItemPastApprovedBooking(userId, itemId, LocalDateTime.now())
                 .orElseThrow(() -> new BadDataException("The user id " + userId + " did not book the item id " + itemId));
         commentDto.setCreated(LocalDateTime.now());
-        return CommentMapper.CommentToCommentDto(commentRepository.save(CommentMapper.CommentDtoToComment(commentDto, user, item)));
+        return CommentMapper.commentToCommentDto(commentRepository.save(CommentMapper.commentDtoToComment(commentDto, user, item)));
     }
 
 

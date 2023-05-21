@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class ItemMapper {
 
-    public static ItemDto ItemToItemDto(Item item, BookingWithoutObjDto lastBooking, BookingWithoutObjDto nextBooking, List<CommentDto> commentDtoList) {
+    public static ItemDto itemToItemDto(Item item, BookingWithoutObjDto lastBooking, BookingWithoutObjDto nextBooking, List<CommentDto> commentDtoList) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -24,7 +24,8 @@ public class ItemMapper {
                 .comments(commentDtoList)
                 .build();
     }
-    public static Item ItemDtoToItem(ItemDto itemDto, User user) {
+
+    public static Item itemDtoToItem(ItemDto itemDto, User user) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
@@ -35,8 +36,8 @@ public class ItemMapper {
                 .build();
     }
 
-    public static List<ItemDto> ListItemToListItemDto(List<Item> items) {
-        return items.stream().map(item -> ItemMapper.ItemToItemDto(item,null,null,null)).collect(Collectors.toList());
+    public static List<ItemDto> listItemToListItemDto(List<Item> items) {
+        return items.stream().map(item -> ItemMapper.itemToItemDto(item, null, null, null)).collect(Collectors.toList());
     }
 
 }

@@ -27,10 +27,10 @@ public class BookingService {
         Item item = itemRepository.findById(bookingWithoutObjDto.getItemId()).orElseThrow(() -> new NotFoundException("Item with ID " + bookingWithoutObjDto.getItemId() + " not found"));
         bookingValidator.checkItemAvailable(item);
         bookingWithoutObjDto.setStatus(BookingStatus.WAITING);
-        Booking booking = BookingMapper.BookingDtoToBooking(bookingWithoutObjDto, user, item);
+        Booking booking = BookingMapper.bookingDtoToBooking(bookingWithoutObjDto, user, item);
         bookingValidator.checkBookingStartBeforeEnd(booking);
         bookingValidator.checkNotYourOwnItem(userId,booking);
-        return BookingMapper.BookingToBookingDto(bookingRepository.save(booking));
+        return BookingMapper.bookingToBookingDto(bookingRepository.save(booking));
     }
 
     public BookingDto approvedBooking(Long bookingId, Boolean isApproved, Long userId) {
@@ -44,30 +44,30 @@ public class BookingService {
             booking.setStatus(BookingStatus.REJECTED);
         }
 
-        return BookingMapper.BookingToBookingDto(bookingRepository.save(booking));
+        return BookingMapper.bookingToBookingDto(bookingRepository.save(booking));
     }
 
     public BookingDto getBooking(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("Booking with ID " + bookingId + " not found"));
         bookingValidator.checkItemOwnerOrAfter(booking, userId);
-        return BookingMapper.BookingToBookingDto(booking);
+        return BookingMapper.bookingToBookingDto(booking);
     }
 
     public List<BookingDto> getBookerBookings(String state, Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
         switch (state) {
             case "ALL":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.findByBookerIdOrderByStartDesc(userId));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.findByBookerIdOrderByStartDesc(userId));
             case "CURRENT":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.findByBookerIdAndStartLessThanAndEndGreaterThanOrderByStartDesc(userId, LocalDateTime.now(),LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.findByBookerIdAndStartLessThanAndEndGreaterThanOrderByStartDesc(userId, LocalDateTime.now(),LocalDateTime.now()));
             case "FUTURE":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.findByBookerIdAndStartGreaterThanOrderByStartDesc(userId, LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.findByBookerIdAndStartGreaterThanOrderByStartDesc(userId, LocalDateTime.now()));
             case "PAST":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.findByBookerIdAndEndLessThanOrderByStartDesc(userId, LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.findByBookerIdAndEndLessThanOrderByStartDesc(userId, LocalDateTime.now()));
             case "REJECTED":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getBookerRejectedBooking(userId));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getBookerRejectedBooking(userId));
             case "WAITING":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.findByBookerIdAndStartGreaterThanEqualAndStatusIsOrderByStartDesc(userId, LocalDateTime.now(),BookingStatus.WAITING));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.findByBookerIdAndStartGreaterThanEqualAndStatusIsOrderByStartDesc(userId, LocalDateTime.now(),BookingStatus.WAITING));
             default:
                 throw new BadDataException("Unknown state: UNSUPPORTED_STATUS");
         }
@@ -77,17 +77,17 @@ public class BookingService {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
         switch (state) {
             case "ALL":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getOwnerBooking(userId));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getOwnerBooking(userId));
             case "CURRENT":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getOwnerCurrentBooking(userId, LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getOwnerCurrentBooking(userId, LocalDateTime.now()));
             case "FUTURE":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getOwnerFutureBooking(userId, LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getOwnerFutureBooking(userId, LocalDateTime.now()));
             case "PAST":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getOwnerPastBooking(userId, LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getOwnerPastBooking(userId, LocalDateTime.now()));
             case "REJECTED":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getOwnerRejectedBooking(userId));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getOwnerRejectedBooking(userId));
             case "WAITING":
-                return BookingMapper.BookingListToListBookingDto(bookingRepository.getOwnerWaitingBooking(userId, LocalDateTime.now()));
+                return BookingMapper.bookingListToListBookingDto(bookingRepository.getOwnerWaitingBooking(userId, LocalDateTime.now()));
             default:
                 throw new BadDataException("Unknown state: UNSUPPORTED_STATUS");
         }
