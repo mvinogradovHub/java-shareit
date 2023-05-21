@@ -18,9 +18,9 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto addBooking(@Valid @RequestBody BookingWithoutAttachObjDto bookingWithoutAttachObjDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Received request to POST /bookings with RequestHeader X-Sharer-User-Id = {} and body: {}", userId, bookingWithoutAttachObjDto);
-        return bookingService.addBooking(bookingWithoutAttachObjDto, userId);
+    public BookingDto addBooking(@Valid @RequestBody BookingWithoutObjDto bookingWithoutObjDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Received request to POST /bookings with RequestHeader X-Sharer-User-Id = {} and body: {}", userId, bookingWithoutObjDto);
+        return bookingService.addBooking(bookingWithoutObjDto, userId);
     }
 
     @PatchMapping("/{bookingId}")

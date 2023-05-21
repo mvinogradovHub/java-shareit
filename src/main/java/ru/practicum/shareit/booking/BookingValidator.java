@@ -16,7 +16,7 @@ public class BookingValidator {
             return;
         }
         log.warn("Booking can be viewed either by the author or the owner of the item");
-        throw new NoRightsToViewException("Booking can be viewed either by the author or the owner of the item");
+        throw new NotFoundException("Booking can be viewed either by the author or the owner of the item");
     }
 
     public void checkItemAvailable(Item item) {
@@ -24,7 +24,7 @@ public class BookingValidator {
             return;
         }
         log.warn("The item is not available for booking");
-        throw new ErrorToCreateException("The item is not available for booking");
+        throw new BadDataException("The item is not available for booking");
     }
 
     public void checkBookingStartBeforeEnd(Booking booking) {
@@ -32,13 +32,13 @@ public class BookingValidator {
             return;
         }
         log.warn("The start date must be earlier than the end date");
-        throw new ErrorToCreateException("The start date must be earlier than the end date");
+        throw new BadDataException("The start date must be earlier than the end date");
     }
 
     public void checkBookingStatus(Boolean isApproved, Booking booking) {
         if (isApproved && booking.getStatus().equals(BookingStatus.APPROVED)) {
             log.warn("Cannot be approved in this status");
-            throw new BadStatusException("Cannot be approved in this status");
+            throw new BadDataException("Cannot be approved in this status");
         }
     }
 

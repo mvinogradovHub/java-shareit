@@ -1,38 +1,18 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.booking.BookingWithoutAttachObjDto;
+import ru.practicum.shareit.booking.BookingWithoutObjDto;
 import ru.practicum.shareit.request.dto.RequestMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ItemMapper {
-    public static ItemDto toItemDto(Item item) {
+
+    public static ItemDto ItemToItemDto(Item item, BookingWithoutObjDto lastBooking, BookingWithoutObjDto nextBooking, List<CommentDto> commentDtoList) {
         return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .owner(UserMapper.toUserDto(item.getOwner()))
-                .available(item.getAvailable())
-                .request(RequestMapper.toItemRequestDto(item.getRequest()))
-                .build();
-    }
-
-    public static Item toItem(ItemDto itemDto, User user) {
-        return Item.builder()
-                .id(itemDto.getId())
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .owner(user)
-                .available(itemDto.getAvailable())
-                .request(RequestMapper.toItemRequest(itemDto.getRequest()))
-                .build();
-    }
-
-    public static ItemWithBookingAndCommentDto toItemWithBookingAndCommentDto(Item item, BookingWithoutAttachObjDto lastBooking, BookingWithoutAttachObjDto nextBooking, List<CommentDto> commentDtoList) {
-        return ItemWithBookingAndCommentDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
@@ -44,4 +24,19 @@ public class ItemMapper {
                 .comments(commentDtoList)
                 .build();
     }
+    public static Item ItemDtoToItem(ItemDto itemDto, User user) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .owner(user)
+                .available(itemDto.getAvailable())
+                .request(RequestMapper.toItemRequest(itemDto.getRequest()))
+                .build();
+    }
+
+    public static List<ItemDto> ListItemToListItemDto(List<Item> items) {
+        return items.stream().map(item -> ItemMapper.ItemToItemDto(item,null,null,null)).collect(Collectors.toList());
+    }
+
 }

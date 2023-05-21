@@ -3,7 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exception.NoEditingRightsException;
+import ru.practicum.shareit.exception.NotFoundException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ public class ItemValidator {
             return;
         }
         log.warn("The user id {} does not have rights to edit items", userId);
-        throw new NoEditingRightsException("User id " + userId + " does not have rights to edit item");
+        throw new NotFoundException("User id " + userId + " does not have rights to edit item");
 
     }
 }

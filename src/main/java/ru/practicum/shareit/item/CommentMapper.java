@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 
 public class CommentMapper {
-    public static CommentDto toCommentDto(Comment comment) {
+    public static CommentDto CommentToCommentDto(Comment comment) {
         return CommentDto.builder()
                 .text(comment.getText())
                 .authorName(comment.getAuthor().getName())
@@ -16,7 +16,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public static Comment toComment(CommentDto commentDto, User user, Item item) {
+    public static Comment CommentDtoToComment(CommentDto commentDto, User user, Item item) {
         return Comment.builder()
                 .text(commentDto.getText())
                 .author(user)
@@ -26,8 +26,8 @@ public class CommentMapper {
                 .build();
     }
 
-    public static List<CommentDto> toListCommentDto(List<Comment> commentList) {
-        return commentList.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+    public static List<CommentDto> ListCommentToListCommentDto(List<Comment> commentList) {
+        return commentList.stream().map(CommentMapper::CommentToCommentDto).collect(Collectors.toList());
     }
 
 }

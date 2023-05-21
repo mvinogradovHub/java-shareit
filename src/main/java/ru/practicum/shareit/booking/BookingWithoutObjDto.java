@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
-public class BookingWithoutAttachObjDto {
+public class BookingWithoutObjDto {
     private Long id;
     @NotNull
     @FutureOrPresent(message = "The start date cannot be in the past")

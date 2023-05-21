@@ -11,18 +11,10 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBookerIdOrderByStartDesc(Long bookerId);
 
-    @Query(" select b from Booking as b" +
-            " where b.booker.id = ?1 and" +
-            " ?2 between b.start and b.end" +
-            " order by b.start desc")
-    List<Booking> getBookerCurrentBooking(Long bookerId, LocalDateTime localDateTime);
+    List<Booking> findByBookerIdAndStartLessThanAndEndGreaterThanOrderByStartDesc(Long bookerId, LocalDateTime localDateTime, LocalDateTime localDateTime2);
 
-    @Query(" select b from Booking as b" +
-            " where b.booker.id = ?1 and" +
-            " b.start >= ?2 and" +
-            " b.status = 'WAITING' " +
-            " order by b.start desc")
-    List<Booking> getBookerWaitingBooking(Long bookerId, LocalDateTime localDateTime);
+
+    List<Booking> findByBookerIdAndStartGreaterThanEqualAndStatusIsOrderByStartDesc(Long bookerId, LocalDateTime localDateTime, BookingStatus status);
 
     @Query(" select b from Booking as b" +
             " where b.booker.id = ?1 and" +
@@ -30,17 +22,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " order by b.start desc")
     List<Booking> getBookerRejectedBooking(Long bookerId);
 
-    @Query(" select b from Booking as b" +
-            " where b.booker.id = ?1 and" +
-            " b.start > ?2" +
-            " order by b.start desc")
-    List<Booking> getBookerFutureBooking(Long bookerId, LocalDateTime localDateTime);
+    List<Booking> findByBookerIdAndStartGreaterThanOrderByStartDesc(Long bookerId, LocalDateTime localDateTime);
 
-    @Query(" select b from Booking as b" +
-            " where b.booker.id = ?1 and" +
-            " b.end < ?2" +
-            " order by b.start desc")
-    List<Booking> getBookerPastBooking(Long bookerId, LocalDateTime localDateTime);
+    List<Booking> findByBookerIdAndEndLessThanOrderByStartDesc(Long bookerId, LocalDateTime localDateTime);
 
     @Query(" select b from Booking as b" +
             " where b.item.owner.id = ?1" +

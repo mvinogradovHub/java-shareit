@@ -30,13 +30,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemWithBookingAndCommentDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
+    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
         log.info("Received request to GET /items/{} with RequestHeader X-Sharer-User-Id = {}", itemId, userId);
         return itemService.getItem(userId, itemId);
     }
 
     @GetMapping
-    public List<ItemWithBookingAndCommentDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Received request to GET /items with RequestHeader X-Sharer-User-Id = {}", userId);
         return itemService.getItems(userId);
     }
