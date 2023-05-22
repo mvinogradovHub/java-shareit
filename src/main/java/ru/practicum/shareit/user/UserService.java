@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,18 +13,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final UserValidator userValidator;
 
     public UserDto addUser(UserDto userDto) {
-        userValidator.checkMailConflict(userDto);
-        return UserMapper.toUserDto(userRepository.addUser(UserMapper.toUser(userDto)));
+        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
     }
 
     public UserDto updateUser(UserDto userDto, Long id) {
         userDto.setId(id);
-        userValidator.checkUserInRepository(id);
-        userValidator.checkMailConflict(userDto);
-        User userInStorage = userRepository.getUserById(id);
+        User userInStorage = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
         userInStorage.setId(id);
         if (userDto.getName() != null) {
             userInStorage.setName(userDto.getName());
@@ -31,23 +28,21 @@ public class UserService {
         if (userDto.getEmail() != null) {
             userInStorage.setEmail(userDto.getEmail());
         }
-        return UserMapper.toUserDto(userRepository.updateUser(userInStorage));
+        return UserMapper.toUserDto(userRepository.save(userInStorage));
 
     }
 
     public void deleteUser(Long id) {
-        userValidator.checkUserInRepository(id);
-        userRepository.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
     public List<UserDto> getUsers() {
-        return userRepository.getUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
 
     }
 
     public UserDto getUserById(Long id) {
-        userValidator.checkUserInRepository(id);
-        return UserMapper.toUserDto(userRepository.getUserById(id));
+        return UserMapper.toUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not found")));
     }
 
 

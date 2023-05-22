@@ -11,5 +11,5 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class ItemRequestDto {
-    Long id;
+    private Long id;
 }
