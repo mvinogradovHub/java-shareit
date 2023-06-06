@@ -5,11 +5,8 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.util.Objects;
 
-/**
- * TODO Sprint add-controllers.
- */
+/** TODO Sprint add-controllers. */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,31 +16,22 @@ import java.util.Objects;
 @Setter
 @ToString
 public class Item {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String description;
-    @Column(name = "is_available")
-    private Boolean available;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private User owner;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private ItemRequest request;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
+  private String name;
+  private String description;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id);
-    }
+  @Column(name = "is_available")
+  private Boolean available;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @ToString.Exclude
+  private User owner;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @ToString.Exclude
+  private ItemRequest request;
+
 }

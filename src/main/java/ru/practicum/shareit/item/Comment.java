@@ -15,15 +15,19 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String text;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Item item;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private User author;
-    private LocalDateTime created;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String text;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @ToString.Exclude
+  private Item item;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @ToString.Exclude
+  private User author;
+
+  private LocalDateTime created;
 }

@@ -12,38 +12,42 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public UserDto addUser(UserDto userDto) {
-        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
+  public UserDto addUser(UserDto userDto) {
+    return UserMapper.userToUserDto(userRepository.save(UserMapper.userDtoToUser(userDto)));
+  }
+
+  public UserDto updateUser(UserDto userDto, Long id) {
+    userDto.setId(id);
+    User userInStorage =
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
+    userInStorage.setId(id);
+    if (userDto.getName() != null) {
+      userInStorage.setName(userDto.getName());
     }
-
-    public UserDto updateUser(UserDto userDto, Long id) {
-        userDto.setId(id);
-        User userInStorage = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
-        userInStorage.setId(id);
-        if (userDto.getName() != null) {
-            userInStorage.setName(userDto.getName());
-        }
-        if (userDto.getEmail() != null) {
-            userInStorage.setEmail(userDto.getEmail());
-        }
-        return UserMapper.toUserDto(userRepository.save(userInStorage));
-
+    if (userDto.getEmail() != null) {
+      userInStorage.setEmail(userDto.getEmail());
     }
+    return UserMapper.userToUserDto(userRepository.save(userInStorage));
+  }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
+  public void deleteUser(Long id) {
+    userRepository.deleteById(id);
+  }
 
-    public List<UserDto> getUsers() {
-        return userRepository.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+  public List<UserDto> getUsers() {
+    return userRepository.findAll().stream()
+        .map(UserMapper::userToUserDto)
+        .collect(Collectors.toList());
+  }
 
-    }
-
-    public UserDto getUserById(Long id) {
-        return UserMapper.toUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not found")));
-    }
-
-
+  public UserDto getUserById(Long id) {
+    return UserMapper.userToUserDto(
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("User with ID " + id + " not found")));
+  }
 }
