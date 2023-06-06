@@ -13,6 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +23,6 @@ public class User {
 
   @Column(name = "email", unique = true)
   private String email;
-
-  public User() {}
 
   @Override
   public boolean equals(Object o) {

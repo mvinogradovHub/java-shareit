@@ -241,9 +241,6 @@ class BookingServiceTest {
   }
 
   @Test
-  void getBookerBookings() {}
-
-  @Test
   void getBookerBookings_whenUserNotFound_thenNotFoundException() {
     when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 

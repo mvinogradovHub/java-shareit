@@ -28,10 +28,7 @@ class UserServiceTest {
   }
 
   @Test
-  void addUser() {}
-
-  @Test
-  void addItem_whenItemAdd_thenReturnedItem() {
+  void addUser_whenInvoke_thenReturnedUserDto() {
     when(userRepository.save(user)).thenReturn(user);
 
     UserDto actualUserDto = userService.addUser(userDto);
