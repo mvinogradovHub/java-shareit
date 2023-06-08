@@ -9,23 +9,26 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-/** TODO Sprint add-bookings. */
+/**
+ * TODO Sprint add-bookings.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingWithoutObjDto {
-  private Long id;
+    private Long id;
 
-  @NotNull
-  @FutureOrPresent(message = "The start date cannot be in the past")
-  private LocalDateTime start;
+    @NotNull
+    @FutureOrPresent(message = "The start date cannot be in the past")
+    private LocalDateTime start;
 
-  @NotNull
-  @FutureOrPresent(message = "The end date cannot be in the past")
-  private LocalDateTime end;
+    @NotNull
+    @FutureOrPresent(message = "The end date cannot be in the past")
+    private LocalDateTime end;
 
-  @NotNull private Long itemId;
-  private Long bookerId;
-  private BookingStatus status;
+    @NotNull
+    private Long itemId;
+    private Long bookerId;
+    private BookingStatus status;
 }

@@ -11,44 +11,42 @@ import ru.practicum.shareit.item.Item;
 @Component
 public class BookingValidator {
 
-  public void checkItemOwnerOrAfter(Booking booking, Long userId) {
-    if (userId.equals(booking.getBooker().getId())
-        || userId.equals(booking.getItem().getOwner().getId())) {
-      return;
+    public void checkItemOwnerOrAfter(Booking booking, Long userId) {
+        if (userId.equals(booking.getBooker().getId()) || userId.equals(booking.getItem().getOwner().getId())) {
+            return;
+        }
+        log.warn("Booking can be viewed either by the author or the owner of the item");
+        throw new NotFoundException("Booking can be viewed either by the author or the owner of the item");
     }
-    log.warn("Booking can be viewed either by the author or the owner of the item");
-    throw new NotFoundException(
-        "Booking can be viewed either by the author or the owner of the item");
-  }
 
-  public void checkItemAvailable(Item item) {
-    if (item.getAvailable()) {
-      return;
+    public void checkItemAvailable(Item item) {
+        if (item.getAvailable()) {
+            return;
+        }
+        log.warn("The item is not available for booking");
+        throw new BadDataException("The item is not available for booking");
     }
-    log.warn("The item is not available for booking");
-    throw new BadDataException("The item is not available for booking");
-  }
 
-  public void checkBookingStartBeforeEnd(Booking booking) {
-    if (booking.getEnd().isAfter(booking.getStart())) {
-      return;
+    public void checkBookingStartBeforeEnd(Booking booking) {
+        if (booking.getEnd().isAfter(booking.getStart())) {
+            return;
+        }
+        log.warn("The start date must be earlier than the end date");
+        throw new BadDataException("The start date must be earlier than the end date");
     }
-    log.warn("The start date must be earlier than the end date");
-    throw new BadDataException("The start date must be earlier than the end date");
-  }
 
-  public void checkBookingStatus(Boolean isApproved, Booking booking) {
-    if (isApproved && booking.getStatus().equals(BookingStatus.APPROVED)) {
-      log.warn("Cannot be approved in this status");
-      throw new BadDataException("Cannot be approved in this status");
+    public void checkBookingStatus(Boolean isApproved, Booking booking) {
+        if (isApproved && booking.getStatus().equals(BookingStatus.APPROVED)) {
+            log.warn("Cannot be approved in this status");
+            throw new BadDataException("Cannot be approved in this status");
+        }
     }
-  }
 
-  public void checkNotYourOwnItem(Long userId, Booking booking) {
-    if (!booking.getItem().getId().equals(userId)) {
-      return;
+    public void checkNotYourOwnItem(Long userId, Booking booking) {
+        if (!booking.getItem().getId().equals(userId)) {
+            return;
+        }
+        log.warn("You can't book your own Item");
+        throw new NotFoundException("You can't book your own Item");
     }
-    log.warn("You can't book your own Item");
-    throw new NotFoundException("You can't book your own Item");
-  }
 }

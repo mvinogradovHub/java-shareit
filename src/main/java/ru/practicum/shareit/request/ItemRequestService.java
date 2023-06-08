@@ -17,51 +17,34 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemRequestService {
-  private final ItemRequestRepository itemRequestRepository;
-  private final UserRepository userRepository;
+    private final ItemRequestRepository itemRequestRepository;
+    private final UserRepository userRepository;
 
-  public ItemRequestDto addItemRequest(ItemRequestDto itemRequestDto, Long userId) {
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    itemRequestDto.setCreated(LocalDateTime.now());
-    return ItemRequestMapper.itemRequestToItemRequestDto(
-        itemRequestRepository.save(
-            ItemRequestMapper.itemRequestDtoToItemRequest(itemRequestDto, user)));
-  }
+    public ItemRequestDto addItemRequest(ItemRequestDto itemRequestDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+        itemRequestDto.setCreated(LocalDateTime.now());
+        return ItemRequestMapper.itemRequestToItemRequestDto(itemRequestRepository.save(ItemRequestMapper.itemRequestDtoToItemRequest(itemRequestDto, user)));
+    }
 
-  public List<ItemRequestDto> getItemRequests(Long userId) {
-    userRepository
-        .findById(userId)
-        .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    return ItemRequestMapper.listItemRequestToListItemRequestDto(
-        itemRequestRepository.findByRequestorIdOrderByIdDesc(userId));
-  }
+    public List<ItemRequestDto> getItemRequests(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+        return ItemRequestMapper.listItemRequestToListItemRequestDto(itemRequestRepository.findByRequestorIdOrderByIdDesc(userId));
+    }
 
-  public ItemRequestDto getItemRequest(Long userId, Long requestId) {
-    userRepository
-        .findById(userId)
-        .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    ItemRequest itemRequest =
-        itemRequestRepository
-            .findById(requestId)
-            .orElseThrow(
-                () -> new NotFoundException("Request with ID " + requestId + " not found"));
-    return ItemRequestMapper.itemRequestToItemRequestDto(itemRequest);
-  }
+    public ItemRequestDto getItemRequest(Long userId, Long requestId) {
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Request with ID " + requestId + " not found"));
+        return ItemRequestMapper.itemRequestToItemRequestDto(itemRequest);
+    }
 
-  public List<ItemRequestDto> getItemPageableRequests(Long userId, Integer start, Integer size) {
-    userRepository
-        .findById(userId)
-        .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    Pageable pageableRequest = convertToPageSettings(start, size, "id");
-    return ItemRequestMapper.listItemRequestToListItemRequestDto(
-        itemRequestRepository.findByIdNot(userId, pageableRequest));
-  }
+    public List<ItemRequestDto> getItemPageableRequests(Long userId, Integer from, Integer size) {
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+        Pageable pageableRequest = convertToPageSettings(from, size, "id");
+        return ItemRequestMapper.listItemRequestToListItemRequestDto(itemRequestRepository.findByIdNot(userId, pageableRequest));
+    }
 
-  public Pageable convertToPageSettings(Integer start, Integer size, String sort) {
-    int page = start >= 0 ? Math.round((float) start / size) : -1;
-    return PageRequest.of(page, size, Sort.by(sort).descending());
-  }
+    public Pageable convertToPageSettings(Integer from, Integer size, String sort) {
+        int page = from >= 0 ? Math.round((float) from / size) : -1;
+        return PageRequest.of(page, size, Sort.by(sort).descending());
+    }
 }

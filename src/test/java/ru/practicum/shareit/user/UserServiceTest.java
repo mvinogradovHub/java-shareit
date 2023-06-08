@@ -15,94 +15,110 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-  @InjectMocks private UserService userService;
-  @Mock private UserRepository userRepository;
-  @Captor private ArgumentCaptor<User> userArgumentCaptor;
-  private User user;
-  private UserDto userDto;
+    @InjectMocks
+    private UserService userService;
+    @Mock
+    private UserRepository userRepository;
+    @Captor
+    private ArgumentCaptor<User> userArgumentCaptor;
+    private User user;
+    private UserDto userDto;
 
-  @BeforeEach
-  void init() {
-    user = User.builder().id(1L).email("mail@mail.ru").name("Misha").build();
-    userDto = UserDto.builder().id(1L).email("mail@mail.ru").name("Misha").build();
-  }
+    @BeforeEach
+    void init() {
+        user = User.builder()
+                .id(1L)
+                .email("mail@mail.ru")
+                .name("Misha")
+                .build();
 
-  @Test
-  void addUser_whenInvoke_thenReturnedUserDto() {
-    when(userRepository.save(user)).thenReturn(user);
+        userDto = UserDto.builder()
+                .id(1L)
+                .email("mail@mail.ru")
+                .name("Misha")
+                .build();
+    }
 
-    UserDto actualUserDto = userService.addUser(userDto);
+    @Test
+    void addUser_whenInvoke_thenReturnedUserDto() {
+        when(userRepository.save(user)).thenReturn(user);
 
-    assertEquals(actualUserDto, userDto);
-    verify(userRepository).save(user);
-  }
+        UserDto actualUserDto = userService.addUser(userDto);
 
-  @Test
-  void updateUser_whenInvoke_thenReturnedUserDto() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-    when(userRepository.save(user)).thenReturn(user);
+        assertEquals(actualUserDto, userDto);
+        verify(userRepository).save(user);
+    }
 
-    UserDto actualUserDto = userService.updateUser(userDto, userDto.getId());
+    @Test
+    void updateUser_whenInvoke_thenReturnedUserDto() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
 
-    assertEquals(actualUserDto, userDto);
-    verify(userRepository).save(user);
-  }
+        UserDto actualUserDto = userService.updateUser(userDto, userDto.getId());
 
-  @Test
-  void updateUser_whenUserNotFound_thenNotFoundException() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        assertEquals(actualUserDto, userDto);
+        verify(userRepository).save(user);
+    }
 
-    assertThrows(NotFoundException.class, () -> userService.updateUser(userDto, userDto.getId()));
-    verify(userRepository, never()).save(Mockito.any());
-  }
+    @Test
+    void updateUser_whenUserNotFound_thenNotFoundException() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-  @Test
-  void updateUser_whenUpdate_thenUpdateOnlyNameAndEmail() {
-    when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
-    when(userRepository.save(user)).thenReturn(user);
-    UserDto updateUser = UserDto.builder().id(3L).email("newMail@mail.ru").name("vasia").build();
+        assertThrows(NotFoundException.class, () -> userService.updateUser(userDto, userDto.getId()));
+        verify(userRepository, never()).save(Mockito.any());
+    }
 
-    userService.updateUser(updateUser, userDto.getId());
-    verify(userRepository).save(userArgumentCaptor.capture());
-    User savedUser = userArgumentCaptor.getValue();
+    @Test
+    void updateUser_whenUpdate_thenUpdateOnlyNameAndEmail() {
+        when(userRepository.findById(userDto.getId())).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+        UserDto updateUser = UserDto.builder()
+                .id(3L)
+                .email("newMail@mail.ru")
+                .name("vasia")
+                .build();
 
-    assertEquals(savedUser.getName(), "vasia");
-    assertEquals(savedUser.getEmail(), "newMail@mail.ru");
-    assertNotEquals(savedUser.getId(), 3L);
-  }
+        userService.updateUser(updateUser, userDto.getId());
+        verify(userRepository).save(userArgumentCaptor.capture());
+        User savedUser = userArgumentCaptor.getValue();
 
-  @Test
-  void deleteUser_whenInvoke_thenInvokeDeleteById() {
-    userService.deleteUser(1L);
+        assertEquals(savedUser.getName(), "vasia");
+        assertEquals(savedUser.getEmail(), "newMail@mail.ru");
+        assertNotEquals(savedUser.getId(), 3L);
+    }
 
-    verify(userRepository).deleteById(1L);
-  }
+    @Test
+    void deleteUser_whenInvoke_thenInvokeDeleteById() {
+        userService.deleteUser(1L);
 
-  @Test
-  void getUsers_whenInvoke_thenReturnedUserDtoList() {
-    when(userRepository.findAll()).thenReturn(List.of(user));
+        verify(userRepository).deleteById(1L);
+    }
 
-    List<UserDto> users = userService.getUsers();
+    @Test
+    void getUsers_whenInvoke_thenReturnedUserDtoList() {
+        when(userRepository.findAll()).thenReturn(List.of(user));
 
-    assertEquals(users.size(), 1);
-    assertEquals(users.get(0).getId(), user.getId());
-  }
+        List<UserDto> users = userService.getUsers();
 
-  @Test
-  void getUserById_whenUserNotFound_thenNotFoundException() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        assertEquals(users.size(), 1);
+        assertEquals(users.get(0).getId(), user.getId());
+    }
 
-    assertThrows(NotFoundException.class, () -> userService.getUserById(1L));
-    verify(userRepository, never()).save(Mockito.any());
-  }
+    @Test
+    void getUserById_whenUserNotFound_thenNotFoundException() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-  @Test
-  void getUserById_whenInvoke_returnedUserDto() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        assertThrows(NotFoundException.class, () -> userService.getUserById(1L));
+        verify(userRepository, never()).save(Mockito.any());
+    }
 
-    UserDto actualUserDto = userService.getUserById(1L);
-    assertEquals(actualUserDto.getName(), user.getName());
-    assertEquals(actualUserDto.getId(), user.getId());
-    assertEquals(actualUserDto.getEmail(), user.getEmail());
-  }
+    @Test
+    void getUserById_whenInvoke_returnedUserDto() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+
+        UserDto actualUserDto = userService.getUserById(1L);
+        assertEquals(actualUserDto.getName(), user.getName());
+        assertEquals(actualUserDto.getId(), user.getId());
+        assertEquals(actualUserDto.getEmail(), user.getEmail());
+    }
 }

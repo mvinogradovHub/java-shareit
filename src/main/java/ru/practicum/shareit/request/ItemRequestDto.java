@@ -10,14 +10,18 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** TODO Sprint add-item-requests. */
+/**
+ * TODO Sprint add-item-requests.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 public class ItemRequestDto {
-  private Long id;
-  @NotNull @NotBlank private String description;
-  private Long requestorId;
-  private LocalDateTime created;
-  private List<ItemDto> items;
+    private Long id;
+    @NotNull
+    @NotBlank
+    private String description;
+    private Long requestorId;
+    private LocalDateTime created;
+    private List<ItemDto> items;
 }

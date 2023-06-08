@@ -6,7 +6,9 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 
-/** TODO Sprint add-controllers. */
+/**
+ * TODO Sprint add-controllers.
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,22 +18,22 @@ import javax.persistence.*;
 @Setter
 @ToString
 public class Item {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
-  private String description;
+    private String name;
+    private String description;
 
-  @Column(name = "is_available")
-  private Boolean available;
+    @Column(name = "is_available")
+    private Boolean available;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @ToString.Exclude
-  private User owner;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private User owner;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  @ToString.Exclude
-  private ItemRequest request;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ToString.Exclude
+    private ItemRequest request;
 
 }

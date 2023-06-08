@@ -21,158 +21,146 @@ import static org.junit.jupiter.api.Assertions.*;
 @WebMvcTest
 class UserControllerTest {
 
-  @Autowired private ObjectMapper objectMapper;
-  @Autowired private MockMvc mockMvc;
-  @MockBean private UserService userService;
-  @MockBean private BookingService bookingService;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private BookingService bookingService;
 
-  @MockBean private ItemService itemService;
+    @MockBean
+    private ItemService itemService;
 
-  @MockBean private ItemRequestService itemRequestService;
+    @MockBean
+    private ItemRequestService itemRequestService;
 
-  private UserDto userDto;
+    private UserDto userDto;
 
-  @BeforeEach
-  void init() {
+    @BeforeEach
+    void init() {
 
-    userDto = UserDto.builder().id(1L).email("mail@mail.ru").name("Misha").build();
-  }
+        userDto = UserDto.builder()
+                .id(1L)
+                .email("mail@mail.ru")
+                .name("Misha")
+                .build();
+    }
 
-  @SneakyThrows
-  @Test
-  void addUser_whenInvoke_returnUser() {
-    when(userService.addUser(userDto)).thenReturn(userDto);
+    @SneakyThrows
+    @Test
+    void addUser_whenInvoke_returnUser() {
+        when(userService.addUser(userDto)).thenReturn(userDto);
 
-    String result =
-        mockMvc
-            .perform(
-                post("/users")
-                    .contentType("application/json")
-                    .content(objectMapper.writeValueAsString(userDto)))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        String result = mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-    assertEquals(objectMapper.writeValueAsString(userDto), result);
-  }
+        assertEquals(objectMapper.writeValueAsString(userDto), result);
+    }
 
-  @SneakyThrows
-  @Test
-  void addUser_whenInvokeWithEmptyNameUser_returnBadRequest() {
-    userDto.setName("");
+    @SneakyThrows
+    @Test
+    void addUser_whenInvokeWithEmptyNameUser_returnBadRequest() {
+        userDto.setName("");
+        when(userService.addUser(userDto)).thenReturn(userDto);
 
-    when(userService.addUser(userDto)).thenReturn(userDto);
+        mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isBadRequest());
+    }
 
-    mockMvc
-        .perform(
-            post("/users")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userDto)))
-        .andExpect(status().isBadRequest());
-  }
+    @SneakyThrows
+    @Test
+    void addUser_whenInvokeWithEmptyEmailUser_returnBadRequest() {
+        userDto.setEmail("");
+        when(userService.addUser(userDto)).thenReturn(userDto);
 
-  @SneakyThrows
-  @Test
-  void addUser_whenInvokeWithEmptyEmailUser_returnBadRequest() {
-    userDto.setEmail("");
+        mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isBadRequest());
+    }
 
-    when(userService.addUser(userDto)).thenReturn(userDto);
+    @SneakyThrows
+    @Test
+    void addUser_whenInvokeWithBadMailUser_returnBadRequest() {
+        userDto.setEmail("badMail");
+        when(userService.addUser(userDto)).thenReturn(userDto);
 
-    mockMvc
-        .perform(
-            post("/users")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userDto)))
-        .andExpect(status().isBadRequest());
-  }
+        mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isBadRequest());
+    }
 
-  @SneakyThrows
-  @Test
-  void addUser_whenInvokeWithBadMailUser_returnBadRequest() {
-    userDto.setEmail("badMail");
+    @SneakyThrows
+    @Test
+    void updateUser_whenInvoke_returnUser() {
+        when(userService.updateUser(userDto, userDto.getId())).thenReturn(userDto);
 
-    when(userService.addUser(userDto)).thenReturn(userDto);
+        String result = mockMvc.perform(patch("/users/{userId}", userDto.getId())
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-    mockMvc
-        .perform(
-            post("/users")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userDto)))
-        .andExpect(status().isBadRequest());
-  }
+        assertEquals(objectMapper.writeValueAsString(userDto), result);
+    }
 
-  @SneakyThrows
-  @Test
-  void updateUser_whenInvoke_returnUser() {
-    when(userService.updateUser(userDto, userDto.getId())).thenReturn(userDto);
+    @SneakyThrows
+    @Test
+    void updateUser_whenInvokeWithEmptyNameUser_returnUserDto() {
+        userDto.setName("");
+        when(userService.addUser(userDto)).thenReturn(userDto);
 
-    String result =
-        mockMvc
-            .perform(
-                patch("/users/{userId}", userDto.getId())
-                    .contentType("application/json")
-                    .content(objectMapper.writeValueAsString(userDto)))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        mockMvc.perform(patch("/users/{userId}", userDto.getId())
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isOk());
+    }
 
-    assertEquals(objectMapper.writeValueAsString(userDto), result);
-  }
+    @SneakyThrows
+    @Test
+    void updateUser_whenInvokeWithEmptyEmail_returnUserDto() {
+        userDto.setEmail("");
+        when(userService.addUser(userDto)).thenReturn(userDto);
 
-  @SneakyThrows
-  @Test
-  void updateUser_whenInvokeWithEmptyNameUser_returnUserDto() {
-    userDto.setName("");
+        mockMvc.perform(patch("/users/{userId}", userDto.getId())
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isOk());
+    }
 
-    when(userService.addUser(userDto)).thenReturn(userDto);
+    @SneakyThrows
+    @Test
+    void getUsers_whenInvoke_returnUsersList() {
+        mockMvc.perform(get("/users")).andExpect(status().isOk());
 
-    mockMvc
-        .perform(
-            patch("/users/{userId}", userDto.getId())
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userDto)))
-        .andExpect(status().isOk());
-  }
+        verify(userService).getUsers();
+    }
 
-  @SneakyThrows
-  @Test
-  void updateUser_whenInvokeWithEmptyEmail_returnUserDto() {
-    userDto.setEmail("");
+    @SneakyThrows
+    @Test
+    void getUserById_whenInvoke_returnUser() {
+        mockMvc.perform(get("/users/{id}", userDto.getId())).andExpect(status().isOk());
 
-    when(userService.addUser(userDto)).thenReturn(userDto);
+        verify(userService).getUserById(userDto.getId());
+    }
 
-    mockMvc
-        .perform(
-            patch("/users/{userId}", userDto.getId())
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userDto)))
-        .andExpect(status().isOk());
-  }
+    @SneakyThrows
+    @Test
+    void deleteUser_whenInvoke_returnStatusOk() {
+        mockMvc.perform(delete("/users/{id}", userDto.getId())).andExpect(status().isOk());
 
-  @SneakyThrows
-  @Test
-  void getUsers_whenInvoke_returnUsersList() {
-    mockMvc.perform(get("/users")).andExpect(status().isOk());
-
-    verify(userService).getUsers();
-  }
-
-  @SneakyThrows
-  @Test
-  void getUserById_whenInvoke_returnUser() {
-
-    mockMvc.perform(get("/users/{id}", userDto.getId())).andExpect(status().isOk());
-
-    verify(userService).getUserById(userDto.getId());
-  }
-
-  @SneakyThrows
-  @Test
-  void deleteUser_whenInvoke_returnStatusOk() {
-    mockMvc.perform(delete("/users/{id}", userDto.getId())).andExpect(status().isOk());
-
-    verify(userService).deleteUser(userDto.getId());
-  }
+        verify(userService).deleteUser(userDto.getId());
+    }
 }

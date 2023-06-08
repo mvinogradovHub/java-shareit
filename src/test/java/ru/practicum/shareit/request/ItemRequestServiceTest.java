@@ -21,132 +21,127 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestServiceTest {
-  @Mock private ItemRequestRepository itemRequestRepository;
-  @Mock private UserRepository userRepository;
-  @InjectMocks private ItemRequestService itemRequestService;
-  @Captor private ArgumentCaptor<Pageable> pageArgumentCaptor;
-  ItemRequest itemRequest;
+    @Mock
+    private ItemRequestRepository itemRequestRepository;
+    @Mock
+    private UserRepository userRepository;
+    @InjectMocks
+    private ItemRequestService itemRequestService;
+    @Captor
+    private ArgumentCaptor<Pageable> pageArgumentCaptor;
+    private ItemRequest itemRequest;
 
-  ItemRequestDto itemRequestDto;
+    private ItemRequestDto itemRequestDto;
 
-  private User user;
+    private User user;
 
-  @BeforeEach
-  void init() {
-    user = User.builder().id(1L).email("mail@mail.ru").name("Misha").build();
+    @BeforeEach
+    void init() {
+        user = User.builder()
+                .id(1L)
+                .email("mail@mail.ru")
+                .name("Misha")
+                .build();
 
-    itemRequest =
-        ItemRequest.builder()
-            .id(5L)
-            .requestor(user)
-            .created(LocalDateTime.of(2023, 3, 10, 0, 0, 0, 0))
-            .items(new ArrayList<>())
-            .description("Описание запроса")
-            .build();
+        itemRequest = ItemRequest.builder()
+                .id(5L)
+                .requestor(user)
+                .created(LocalDateTime.of(2023, 3, 10, 0, 0, 0, 0))
+                .items(new ArrayList<>())
+                .description("Описание запроса")
+                .build();
 
-    itemRequestDto =
-        ItemRequestDto.builder()
-            .id(5L)
-            .requestorId(user.getId())
-            .created(LocalDateTime.of(2023, 3, 10, 0, 0, 0, 0))
-            .items(new ArrayList<>())
-            .description("Описание запроса")
-            .build();
-  }
+        itemRequestDto = ItemRequestDto.builder()
+                .id(5L)
+                .requestorId(user.getId())
+                .created(LocalDateTime.of(2023, 3, 10, 0, 0, 0, 0))
+                .items(new ArrayList<>())
+                .description("Описание запроса")
+                .build();
+    }
 
-  @Test
-  void addItemRequest_whenUserNotFound_thenNotFoundException() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    @Test
+    void addItemRequest_whenUserNotFound_thenNotFoundException() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-    assertThrows(
-        NotFoundException.class,
-        () -> itemRequestService.addItemRequest(itemRequestDto, user.getId()));
-    verify(itemRequestRepository, never()).save(Mockito.any());
-  }
+        assertThrows(NotFoundException.class, () -> itemRequestService.addItemRequest(itemRequestDto, user.getId()));
+        verify(itemRequestRepository, never()).save(Mockito.any());
+    }
 
-  @Test
-  void addItemRequest_whenAdd_thenReturnedItemRequestDto() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-    when(itemRequestRepository.save(itemRequest)).thenReturn(itemRequest);
+    @Test
+    void addItemRequest_whenAdd_thenReturnedItemRequestDto() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.save(itemRequest)).thenReturn(itemRequest);
 
-    ItemRequestDto newItemRequestDto =
-        itemRequestService.addItemRequest(itemRequestDto, user.getId());
+        ItemRequestDto newItemRequestDto = itemRequestService.addItemRequest(itemRequestDto, user.getId());
 
-    assertNotNull(newItemRequestDto.getCreated());
-    assertEquals(newItemRequestDto.getId(), itemRequest.getId());
-  }
+        assertNotNull(newItemRequestDto.getCreated());
+        assertEquals(newItemRequestDto.getId(), itemRequest.getId());
+    }
 
-  @Test
-  void getItemRequests_whenUserNotFound_thenNotFoundException() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    @Test
+    void getItemRequests_whenUserNotFound_thenNotFoundException() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-    assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequests(user.getId()));
-  }
+        assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequests(user.getId()));
+    }
 
-  @Test
-  void getItemRequests_whenInvoke_thenReturnedItemRequestDtoList() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-    when(itemRequestRepository.findByRequestorIdOrderByIdDesc(user.getId()))
-        .thenReturn(List.of(itemRequest));
+    @Test
+    void getItemRequests_whenInvoke_thenReturnedItemRequestDtoList() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.findByRequestorIdOrderByIdDesc(user.getId())).thenReturn(List.of(itemRequest));
 
-    List<ItemRequestDto> newItemRequestDtoList = itemRequestService.getItemRequests(user.getId());
+        List<ItemRequestDto> newItemRequestDtoList = itemRequestService.getItemRequests(user.getId());
 
-    assertEquals(newItemRequestDtoList.size(), 1);
-    assertEquals(newItemRequestDtoList.get(0).getId(), itemRequest.getId());
-  }
+        assertEquals(newItemRequestDtoList.size(), 1);
+        assertEquals(newItemRequestDtoList.get(0).getId(), itemRequest.getId());
+    }
 
-  @Test
-  void getItemRequest_whenInvoke_thenReturnedItemRequestDto() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-    when(itemRequestRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(itemRequest));
+    @Test
+    void getItemRequest_whenInvoke_thenReturnedItemRequestDto() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(itemRequest));
 
-    ItemRequestDto newItemRequestDto =
-        itemRequestService.getItemRequest(user.getId(), itemRequest.getId());
+        ItemRequestDto newItemRequestDto = itemRequestService.getItemRequest(user.getId(), itemRequest.getId());
 
-    assertEquals(newItemRequestDto.getId(), itemRequest.getId());
-  }
+        assertEquals(newItemRequestDto.getId(), itemRequest.getId());
+    }
 
-  @Test
-  void getItemRequest_whenUserNotFound_thenNotFoundException() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    @Test
+    void getItemRequest_whenUserNotFound_thenNotFoundException() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-    assertThrows(
-        NotFoundException.class,
-        () -> itemRequestService.getItemRequest(user.getId(), itemRequest.getId()));
-  }
+        assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequest(user.getId(), itemRequest.getId()));
+    }
 
-  @Test
-  void getItemRequest_whenItemRequestNotFound_thenNotFoundException() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-    when(itemRequestRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+    @Test
+    void getItemRequest_whenItemRequestNotFound_thenNotFoundException() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-    assertThrows(
-            NotFoundException.class,
-            () -> itemRequestService.getItemRequest(user.getId(), itemRequest.getId()));
-  }
+        assertThrows(NotFoundException.class, () -> itemRequestService.getItemRequest(user.getId(), itemRequest.getId()));
+    }
 
-  @Test
-  void getItemPageableRequests_whenInvoke_thenReturnedItemRequestDtoList() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-    when(itemRequestRepository.findByIdNot(Mockito.anyLong(), Mockito.any()))
-        .thenReturn(List.of(itemRequest));
+    @Test
+    void getItemPageableRequests_whenInvoke_thenReturnedItemRequestDtoList() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.findByIdNot(Mockito.anyLong(), Mockito.any())).thenReturn(List.of(itemRequest));
 
-    List<ItemRequestDto> newItemRequestDtoList =
-        itemRequestService.getItemPageableRequests(user.getId(), 0, 10);
+        List<ItemRequestDto> newItemRequestDtoList = itemRequestService.getItemPageableRequests(user.getId(), 0, 10);
 
-    assertEquals(newItemRequestDtoList.size(), 1);
-    assertEquals(newItemRequestDtoList.get(0).getId(), itemRequest.getId());
-  }
+        assertEquals(newItemRequestDtoList.size(), 1);
+        assertEquals(newItemRequestDtoList.get(0).getId(), itemRequest.getId());
+    }
 
-  @Test
-  void convertToPageSettings_whenInvokeStart13_thenInvokeWithPage3() {
-    when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+    @Test
+    void convertToPageSettings_whenInvokeStart13_thenInvokeWithPage3() {
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
 
-    itemRequestService.getItemPageableRequests(user.getId(), 13, 5);
+        itemRequestService.getItemPageableRequests(user.getId(), 13, 5);
 
-    verify(itemRequestRepository).findByIdNot(Mockito.anyLong(), pageArgumentCaptor.capture());
-    Pageable savedPage = pageArgumentCaptor.getValue();
+        verify(itemRequestRepository).findByIdNot(Mockito.anyLong(), pageArgumentCaptor.capture());
+        Pageable savedPage = pageArgumentCaptor.getValue();
 
-    assertEquals(3, savedPage.getPageNumber());
-  }
+        assertEquals(3, savedPage.getPageNumber());
+    }
 }
