@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE , properties = "db.name=test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = "db.name=test")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemRequestServiceIntegrationTest {
 

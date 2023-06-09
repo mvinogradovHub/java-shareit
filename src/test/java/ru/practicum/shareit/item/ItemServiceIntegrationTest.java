@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE , properties = "db.name=test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = "db.name=test")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiceIntegrationTest {
     private final UserService userService;
