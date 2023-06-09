@@ -13,7 +13,7 @@ public class ItemRequestMapper {
             return null;
         }
         List<ItemDto> items = itemRequest.getItems() == null ? null : itemRequest.getItems().stream()
-                .map(item -> ItemMapper.itemToItemDto(item, null, null, null))
+                .map(ItemMapper::itemToItemDto)
                 .collect(Collectors.toList());
         return ItemRequestDto.builder()
                 .id(itemRequest.getId())

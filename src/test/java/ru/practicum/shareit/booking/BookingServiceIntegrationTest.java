@@ -13,17 +13,19 @@ import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = "db.name=test")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceIntegrationTest {
 
     private final BookingService bookingService;
     private final UserService userService;
     private final ItemService itemService;
+    private final BookingRepository bookingRepository;
     private UserDto savedOwner;
     private UserDto savedBooker;
     private ItemDto savedItem;
@@ -145,7 +147,15 @@ class BookingServiceIntegrationTest {
                 .bookerId(savedBooker.getId())
                 .build();
         BookingDto savedBooking = bookingService.addBooking(newBooking, savedBooker.getId());
-        assertEquals(savedBooking.getStatus(), BookingStatus.WAITING);
+
+        Optional<Booking> bookingInRepository = bookingRepository.findById(savedBooking.getId());
+
+        assertEquals(bookingInRepository.get().getItem().getId(), newBooking.getItemId());
+        assertEquals(bookingInRepository.get().getBooker().getId(), newBooking.getBookerId());
+        assertEquals(bookingInRepository.get().getEnd(), newBooking.getEnd());
+        assertEquals(bookingInRepository.get().getStart(), newBooking.getStart());
+        assertEquals(bookingInRepository.get().getId(), savedBooking.getId());
+        assertEquals(bookingInRepository.get().getStatus(), BookingStatus.WAITING);
     }
 
 

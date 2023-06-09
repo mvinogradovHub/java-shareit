@@ -16,8 +16,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBookerIdAndStartGreaterThanEqualAndStatusIs(Long bookerId, LocalDateTime localDateTime, BookingStatus status, Pageable pageable);
 
     @Query(" select b from Booking as b" +
-            " where b.booker.id = ?1 and" +
-            " (b.status = 'REJECTED' OR b.status = 'CANCELED') ")
+            " where b.booker.id = ?1 and (b.status = 'REJECTED' OR b.status = 'CANCELED') ")
     List<Booking> getBookerRejectedBooking(Long bookerId, Pageable pageable);
 
     List<Booking> findByBookerIdAndStartGreaterThan(Long bookerId, LocalDateTime localDateTime, Pageable pageable);

@@ -92,7 +92,7 @@ class ItemMapperTest {
     void itemToItemDto_whenSendItemWithParametersIsNull_thenReturnLikeItemDto() {
         item.setRequest(null);
 
-        ItemDto newItemDto = ItemMapper.itemToItemDto(item, null, null, null);
+        ItemDto newItemDto = ItemMapper.itemToItemDto(item);
 
         assertNull(newItemDto.getRequestId());
         assertNull(newItemDto.getLastBooking());
@@ -102,7 +102,10 @@ class ItemMapperTest {
 
     @Test
     void itemToItemDto_whenSendItem_thenReturnLikeItemDto() {
-        ItemDto newItemDto = ItemMapper.itemToItemDto(item, booking, booking, comments);
+        ItemDto newItemDto = ItemMapper.itemToItemDto(item);
+        newItemDto.setLastBooking(booking);
+        newItemDto.setNextBooking(booking);
+        newItemDto.setComments(comments);
 
         assertEquals(newItemDto.getId(), item.getId());
         assertEquals(newItemDto.getLastBooking(), booking);

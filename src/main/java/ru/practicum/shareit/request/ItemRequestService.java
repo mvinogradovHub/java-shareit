@@ -43,8 +43,8 @@ public class ItemRequestService {
         return ItemRequestMapper.listItemRequestToListItemRequestDto(itemRequestRepository.findByIdNot(userId, pageableRequest));
     }
 
-    public Pageable convertToPageSettings(Integer from, Integer size, String sort) {
+    public Pageable convertToPageSettings(Integer from, Integer size, String sortingByField) {
         int page = from >= 0 ? Math.round((float) from / size) : -1;
-        return PageRequest.of(page, size, Sort.by(sort).descending());
+        return PageRequest.of(page, size, Sort.by(sortingByField).descending());
     }
 }

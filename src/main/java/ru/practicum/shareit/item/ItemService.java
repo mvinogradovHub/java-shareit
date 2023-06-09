@@ -71,7 +71,11 @@ public class ItemService {
             lastBookingWithoutObjDto = BookingMapper.bookingToBookingWithoutObjDto(bookingRepository.getItemLastBooking(item.getId(), LocalDateTime.now()).orElse(null));
             nextBookingWithoutObjDto = BookingMapper.bookingToBookingWithoutObjDto(bookingRepository.getItemNextBooking(item.getId(), LocalDateTime.now()).orElse(null));
         }
-        return ItemMapper.itemToItemDto(item, lastBookingWithoutObjDto, nextBookingWithoutObjDto, commentsDto);
+        ItemDto itemDto = ItemMapper.itemToItemDto(item);
+        itemDto.setComments(commentsDto);
+        itemDto.setNextBooking(nextBookingWithoutObjDto);
+        itemDto.setLastBooking(lastBookingWithoutObjDto);
+        return itemDto;
     }
 
     public List<ItemDto> getItems(Long userId, Integer from, Integer size) {
@@ -84,7 +88,11 @@ public class ItemService {
             List<CommentDto> commentsDto = CommentMapper.listCommentToListCommentDto(commentRepository.findByItemId(id));
             BookingWithoutObjDto lastBookingWithoutObjDto = BookingMapper.bookingToBookingWithoutObjDto(bookingRepository.getItemLastBooking(id, LocalDateTime.now()).orElse(null));
             BookingWithoutObjDto nextBookingWithoutObjDto = BookingMapper.bookingToBookingWithoutObjDto(bookingRepository.getItemNextBooking(id, LocalDateTime.now()).orElse(null));
-            itemWithBookingAndCommentDto.add(ItemMapper.itemToItemDto(item, lastBookingWithoutObjDto, nextBookingWithoutObjDto, commentsDto));
+            ItemDto itemDto = ItemMapper.itemToItemDto(item);
+            itemDto.setLastBooking(lastBookingWithoutObjDto);
+            itemDto.setNextBooking(nextBookingWithoutObjDto);
+            itemDto.setComments(commentsDto);
+            itemWithBookingAndCommentDto.add(itemDto);
         }
         return itemWithBookingAndCommentDto;
     }
@@ -106,8 +114,8 @@ public class ItemService {
         return CommentMapper.commentToCommentDto(commentRepository.save(CommentMapper.commentDtoToComment(commentDto, user, item)));
     }
 
-    public Pageable convertToPageSettings(Integer from, Integer size, String sort) {
+    public Pageable convertToPageSettings(Integer from, Integer size, String sortingByField) {
         int page = from >= 0 ? Math.round((float) from / size) : -1;
-        return PageRequest.of(page, size, Sort.by(sort));
+        return PageRequest.of(page, size, Sort.by(sortingByField));
     }
 }

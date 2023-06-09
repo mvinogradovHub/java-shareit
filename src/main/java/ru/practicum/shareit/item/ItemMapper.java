@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.booking.BookingWithoutObjDto;
 import ru.practicum.shareit.request.ItemRequestDto;
 import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.user.User;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ItemMapper {
 
-    public static ItemDto itemToItemDto(Item item, BookingWithoutObjDto lastBooking, BookingWithoutObjDto nextBooking, List<CommentDto> commentDtoList) {
+    public static ItemDto itemToItemDto(Item item) {
         Long itemRequestId = item.getRequest() != null ? item.getRequest().getId() : null;
         return ItemDto.builder()
                 .id(item.getId())
@@ -20,15 +19,9 @@ public class ItemMapper {
                 .owner(UserMapper.userToUserDto(item.getOwner()))
                 .available(item.getAvailable())
                 .requestId(itemRequestId)
-                .lastBooking(lastBooking)
-                .nextBooking(nextBooking)
-                .comments(commentDtoList)
                 .build();
     }
 
-    public static ItemDto itemToItemDto(Item item) {
-        return itemToItemDto(item, null, null, null);
-    }
 
     public static Item itemDtoToItem(ItemDto itemDto, User user, ItemRequestDto itemRequestDto) {
         return Item.builder()
@@ -43,7 +36,7 @@ public class ItemMapper {
 
     public static List<ItemDto> listItemToListItemDto(List<Item> items) {
         return items.stream()
-                .map(item -> ItemMapper.itemToItemDto(item, null, null, null))
+                .map(ItemMapper::itemToItemDto)
                 .collect(Collectors.toList());
     }
 }

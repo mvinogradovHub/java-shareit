@@ -73,7 +73,9 @@ class BookingMapperTest {
 
     @Test
     void bookingDtoToBooking_whenSendBookingDto_thenReturnBooking() {
-        Booking newBooking = BookingMapper.bookingDtoToBooking(bookingDto, user, item);
+        Booking newBooking = BookingMapper.bookingDtoToBooking(bookingDto);
+        newBooking.setBooker(user);
+        newBooking.setItem(item);
 
         assertEquals(newBooking.getId(), bookingDto.getId());
         assertEquals(newBooking.getEnd(), bookingDto.getEnd());

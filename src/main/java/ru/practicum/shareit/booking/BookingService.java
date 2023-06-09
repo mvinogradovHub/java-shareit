@@ -29,7 +29,9 @@ public class BookingService {
         Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(() -> new NotFoundException("Item with ID " + bookingDto.getItemId() + " not found"));
         bookingValidator.checkItemAvailable(item);
         bookingDto.setStatus(BookingStatus.WAITING);
-        Booking booking = BookingMapper.bookingDtoToBooking(bookingDto, user, item);
+        Booking booking = BookingMapper.bookingDtoToBooking(bookingDto);
+        booking.setBooker(user);
+        booking.setItem(item);
         bookingValidator.checkBookingStartBeforeEnd(booking);
         bookingValidator.checkNotYourOwnItem(userId, booking);
         return BookingMapper.bookingToBookingDto(bookingRepository.save(booking));
@@ -100,8 +102,8 @@ public class BookingService {
         }
     }
 
-    public Pageable convertToPageSettings(Integer from, Integer size, String sort) {
+    public Pageable convertToPageSettings(Integer from, Integer size, String sortingByField) {
         int page = from >= 0 ? Math.round((float) from / size) : -1;
-        return PageRequest.of(page, size, Sort.by(sort).descending());
+        return PageRequest.of(page, size, Sort.by(sortingByField).descending());
     }
 }
