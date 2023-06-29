@@ -22,7 +22,6 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleSQLError(final PSQLException e) {
@@ -35,4 +34,9 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgument(final IllegalArgumentException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

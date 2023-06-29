@@ -36,14 +36,14 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getBookerBookings(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam(defaultValue = "ALL") String state) {
-        log.info("Received request to GET /bookings?state={} with RequestHeader X-Sharer-User-Id = {}",state, userId);
-        return bookingService.getBookerBookings(state,userId);
+    public List<BookingDto> getBookerBookings(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam(defaultValue = "ALL") String state, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
+        log.info("Received request to GET /bookings?state={} with RequestHeader X-Sharer-User-Id = {}", state, userId);
+        return bookingService.getBookerBookings(state, userId, from, size);
     }
 
-    @GetMapping ("/owner")
-    public List<BookingDto> getOwnerBookings(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam(defaultValue = "ALL") String state) {
-        log.info("Received request to GET /bookings/owner?state={} with RequestHeader X-Sharer-User-Id = {}",state, userId);
-        return bookingService.getOwnerBookings(state,userId);
+    @GetMapping("/owner")
+    public List<BookingDto> getOwnerBookings(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam(defaultValue = "ALL") String state, @RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size) {
+        log.info("Received request to GET /bookings/owner?state={} with RequestHeader X-Sharer-User-Id = {}", state, userId);
+        return bookingService.getOwnerBookings(state, userId, from, size);
     }
 }

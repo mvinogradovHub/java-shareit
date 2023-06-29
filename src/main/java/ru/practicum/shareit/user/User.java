@@ -15,16 +15,16 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Column(name = "email", unique = true)
     private String email;
-
-    public User() {
-    }
 
     @Override
     public boolean equals(Object o) {

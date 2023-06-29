@@ -1,9 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 
 import java.util.List;
@@ -17,38 +15,38 @@ public class BookingMapper {
                 .id(booking.getId())
                 .end(booking.getEnd())
                 .start(booking.getStart())
-                .item(ItemMapper.itemToItemDto(booking.getItem(),null,null,null))
+                .item(ItemMapper.itemToItemDto(booking.getItem()))
                 .status(booking.getStatus())
-                .booker(UserMapper.toUserDto(booking.getBooker()))
+                .booker(UserMapper.userToUserDto(booking.getBooker()))
                 .build();
     }
 
-    public static Booking bookingDtoToBooking(BookingWithoutObjDto bookingWithoutObjDto, User user, Item item) {
+    public static Booking bookingDtoToBooking(BookingWithoutObjDto bookingDto) {
         return Booking.builder()
-                .end(bookingWithoutObjDto.getEnd())
-                .start(bookingWithoutObjDto.getStart())
-                .item(item)
-                .booker(user)
-                .status(bookingWithoutObjDto.getStatus())
+                .id(bookingDto.getId())
+                .end(bookingDto.getEnd())
+                .start(bookingDto.getStart())
+                .status(bookingDto.getStatus())
                 .build();
     }
 
     public static BookingWithoutObjDto bookingToBookingWithoutObjDto(Booking booking) {
-        if (booking != null) {
-            return BookingWithoutObjDto.builder()
-                    .id(booking.getId())
-                    .end(booking.getEnd())
-                    .start(booking.getStart())
-                    .itemId(booking.getItem().getId())
-                    .bookerId(booking.getBooker().getId())
-                    .status(booking.getStatus())
-                    .build();
+        if (booking == null) {
+            return null;
         }
-        return null;
+        return BookingWithoutObjDto.builder()
+                .id(booking.getId())
+                .end(booking.getEnd())
+                .start(booking.getStart())
+                .itemId(booking.getItem().getId())
+                .bookerId(booking.getBooker().getId())
+                .status(booking.getStatus())
+                .build();
     }
 
     public static List<BookingDto> bookingListToListBookingDto(List<Booking> bookingList) {
-        return bookingList.stream().map(BookingMapper::bookingToBookingDto).collect(Collectors.toList());
+        return bookingList.stream()
+                .map(BookingMapper::bookingToBookingDto)
+                .collect(Collectors.toList());
     }
-
 }

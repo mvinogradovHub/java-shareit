@@ -5,7 +5,6 @@ import ru.practicum.shareit.user.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class CommentMapper {
     public static CommentDto commentToCommentDto(Comment comment) {
         return CommentDto.builder()
@@ -27,7 +26,8 @@ public class CommentMapper {
     }
 
     public static List<CommentDto> listCommentToListCommentDto(List<Comment> commentList) {
-        return commentList.stream().map(CommentMapper::commentToCommentDto).collect(Collectors.toList());
+        return commentList.stream()
+                .map(CommentMapper::commentToCommentDto)
+                .collect(Collectors.toList());
     }
-
 }

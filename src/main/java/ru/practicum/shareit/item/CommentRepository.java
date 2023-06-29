@@ -1,13 +1,10 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query(" select c from Comment as c" +
-            " where c.item.id = ?1 " +
-            " order by c.created desc")
-    List<Comment> getCommentsItem(Long itemId);
+
+    List<Comment> findByItemId(Long itemId);
 }

@@ -48,8 +48,5 @@ public class BookingValidator {
         }
         log.warn("You can't book your own Item");
         throw new NotFoundException("You can't book your own Item");
-
     }
-
-
 }

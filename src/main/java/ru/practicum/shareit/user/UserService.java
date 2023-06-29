@@ -15,7 +15,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDto addUser(UserDto userDto) {
-        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
+        return UserMapper.userToUserDto(userRepository.save(UserMapper.userDtoToUser(userDto)));
     }
 
     public UserDto updateUser(UserDto userDto, Long id) {
@@ -28,8 +28,7 @@ public class UserService {
         if (userDto.getEmail() != null) {
             userInStorage.setEmail(userDto.getEmail());
         }
-        return UserMapper.toUserDto(userRepository.save(userInStorage));
-
+        return UserMapper.userToUserDto(userRepository.save(userInStorage));
     }
 
     public void deleteUser(Long id) {
@@ -37,13 +36,10 @@ public class UserService {
     }
 
     public List<UserDto> getUsers() {
-        return userRepository.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
-
+        return userRepository.findAll().stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
     }
 
     public UserDto getUserById(Long id) {
-        return UserMapper.toUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not found")));
+        return UserMapper.userToUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID " + id + " not found")));
     }
-
-
 }
